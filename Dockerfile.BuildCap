@@ -1,0 +1,43 @@
+FROM ubuntu:20.04
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install \
+    build-essential \
+    cmake \
+    file \
+    squashfs-tools \
+    dos2unix \
+    zip \
+    unzip
+
+WORKDIR /etk
+RUN chmod 777 /etk
+COPY etk_tools/8.1.0_Octane_Embedded_Development_Tools.tar.gz /etk/
+RUN tar -xvzf /etk/8.1.0_Octane_Embedded_Development_Tools.tar.gz
+COPY bin/Release/net7.0/publish/* /etk/cap/
+COPY cap_template/* /etk/cap/ 
+RUN mv /etk/cap/cap_gen.sh /etk/cap_gen.sh
+RUN mv /etk/cap/cap_description.in /etk/cap_description.in
+RUN mv /etk/cap/capcommand.sh /etk/capcommand.sh 
+
+RUN chmod 755 /etk/cap/start
+RUN chmod 755 /etk/cap/ConsoleEncoder*
+RUN chmod 755 /etk/cap/*.so
+#RUN chmod 755 /etk/cap/*.a
+RUN chmod 755 /etk/cap/*.dll
+RUN chmod 755 /etk/cap/*.json
+RUN dos2unix /etk/cap/*.json
+RUN dos2unix /etk/*.in
+RUN dos2unix /etk/cap/cust_app_upgrade
+RUN chmod -R 775 /etk/cap/*
+RUN ls -lh /etk/cap
+RUN /etk/8.1.0_Octane_Embedded_Development_Tools/cap_gen.sh -d /etk/cap_description.in -o /etk/consoleencoder_cap.upgx
+RUN chmod 777 /etk/consoleencoder_cap.upgx
+#RUN rm -rf /tmp/etk/*
+#RUN cp /etk/consoleencoder_cap.upgx /tmp/etk/
+
+#COPY --from=cap_template /etk/consoleencoder_cap.upgx .
+
+# Add user
+#ARG UID
+#RUN useradd -mu${UID} -s/bin/bash dev
+#USER dev

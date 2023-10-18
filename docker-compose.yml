@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  encoder:
+    image: ubuntu:20.04
+    build:
+        dockerfile: Dockerfile.BuildCap
+    volumes:
+      - /c/temp:/tmp
+

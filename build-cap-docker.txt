@@ -1,0 +1,11 @@
+﻿docker compose build smartreader
+
+docker compose up -d 
+
+docker compose cp smartreader:/etk/smartreader_cap.upgx cap_deploy/
+
+
+docker compose down
+
+
+

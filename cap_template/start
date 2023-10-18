@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#chown -R root:root *
+chmod 775 /customer/*.sh
+
+#/opt/ys/rshell -c "config network https enable"
+#/opt/ys/rshell -c "config rfid interface rest"
+
+
+cd /customer
+
+(( count = 1 ))
+while true ; do
+
+
+	# Check to see whether /customer/ConsoleEncoder exists
+        if [ -f /customer/ConsoleEncoder ] ; then
+                # The /customer/ConsoleEncoder exists, so tes whether it's executable
+                if [ -x /customer/ConsoleEncoder ] ; then
+                    if [ ! -e /customer/upgrading ]; then
+                            # /customer/ConsoleEncoder is executable, so run it
+                            appDir=/customer
+                            /customer/ConsoleEncoder 127.0.0.1
+                            /usr/bin/logger -p user.notice \
+                                    "Starting custom application, count $count."
+                            (( count = count + 1 ))
+                    fi
+                fi
+                        # /customer/ConsoleEncoder is NOT executable, so wait for a moment
+                 
+		sleep 2
+        else
+                exit 0
+        fi
+done
