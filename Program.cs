@@ -30,18 +30,7 @@ namespace ConsoleEncoder
             else
             {
                 Program.hostname = args[0];
-                if(args.Length > 0 && args.Length == 2)
-                {
-                    try
-                    {
-                        Program.NUM_WORDS_USER_MEMORY = ushort.Parse(args[1]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error parsing user memory size (words): " + ex.Message);
-                    }
-                    
-                }
+                
                 while (true)
                 {
                     TcpClient client = await listener.AcceptTcpClientAsync();
@@ -66,6 +55,46 @@ namespace ConsoleEncoder
                         string? receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                         if (receivedData.StartsWith("START"))
                         {
+                            if(receivedData.Contains("|"))
+                            {
+                                try
+                                {
+                                    var inputParams = receivedData.Split("|");
+                                   
+                                    
+
+                                    if (inputParams.Length > 0 && inputParams.Length > 1)
+                                    {
+                                        try
+                                        {
+                                            Program.NUM_WORDS_USER_MEMORY = ushort.Parse(inputParams[1]);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine("Error parsing user memory size (words): " + ex.Message);
+                                        }
+                                    }
+
+                                    if (inputParams.Length > 0 && inputParams.Length > 2)
+                                    {
+                                        try
+                                        {
+                                            var txPowerParam = inputParams[2];
+                                            txPower = double.Parse(txPowerParam);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine("Error parsing txPower: " + ex.Message);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("Starting with default parameters due to " +
+                                        "error parsing START parameters. " + ex.Message);
+
+                                }
+                            }
                             CancellationTokenSource cancellationTokenSource = new();
                             Program.StartRead(hostname);
                             _ = Task.Run(() => Program.SendTagDataToTcpClientsAsync(stream, cancellationTokenSource.Token));
