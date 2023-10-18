@@ -1,8 +1,8 @@
-﻿docker compose build smartreader
+﻿docker compose build encoder
 
 docker compose up -d 
 
-docker compose cp smartreader:/etk/smartreader_cap.upgx cap_deploy/
+docker compose cp encoder:/etk/consoleencoder_cap.upgx cap_deploy/
 
 
 docker compose down
