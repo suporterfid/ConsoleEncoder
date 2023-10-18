@@ -46,12 +46,12 @@ namespace ConsoleEncoder
                 {
                     TcpClient client = await listener.AcceptTcpClientAsync();
                     Console.WriteLine("Client connected.");
-                    _ = Program.HandleClientAsync(client);
+                    _ = Program.HandleTcpClientAsync(client);
                 }
             }
         }
 
-        private static async Task HandleClientAsync(TcpClient client)
+        private static async Task HandleTcpClientAsync(TcpClient client)
         {
             using NetworkStream stream = client.GetStream();
             byte[]? buffer = new byte[1024];
@@ -68,7 +68,7 @@ namespace ConsoleEncoder
                         {
                             CancellationTokenSource cancellationTokenSource = new();
                             Program.StartRead(hostname);
-                            _ = Task.Run(() => Program.SendDataAsync(stream, cancellationTokenSource.Token));
+                            _ = Task.Run(() => Program.SendTagDataToTcpClientsAsync(stream, cancellationTokenSource.Token));
                             do
                             {
                                 bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
@@ -132,8 +132,6 @@ namespace ConsoleEncoder
             try
             {
                 Program.reader.Connect(hostname);
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
                 Program.reader.TagOpComplete += OnTagOpComplete;
                 Settings settings = Program.reader.QueryDefaultSettings();
                 settings.Antennas.EnableAll();
@@ -255,7 +253,7 @@ namespace ConsoleEncoder
             }
         }
 
-        private static async Task SendDataAsync(
+        private static async Task SendTagDataToTcpClientsAsync(
           NetworkStream stream,
           CancellationToken cancellationToken)
         {
