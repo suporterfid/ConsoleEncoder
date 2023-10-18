@@ -10,7 +10,7 @@ namespace ConsoleEncoder
     {
         private static readonly ConcurrentQueue<TagEvent> _messageQueueTagSmartReaderTagEventSocketServer = new();
         private static readonly ImpinjReader reader = new();
-        private static ushort NUM_WORDS_USER_MEMORY = 128;
+        private static ushort NUM_WORDS_USER_MEMORY = 32;
         private static int opIdUser;
         private static int opIdTid;
         private static string? hostname;
@@ -137,7 +137,7 @@ namespace ConsoleEncoder
                 settings.Antennas.EnableAll();
                 settings.Antennas.RxSensitivityMax = true;
                 settings.Antennas.TxPowerMax = false;
-                settings.Antennas.TxPowerInDbm = 18.0;
+                settings.Antennas.TxPowerInDbm = 30.0;
                 Program.OptimizedRead(settings, 3, NUM_WORDS_USER_MEMORY);
                 Program.reader.ApplySettings(settings);
                 Program.reader.Start();
@@ -162,7 +162,7 @@ namespace ConsoleEncoder
             }
         }
 
-        private static void WriteUserMemory(string targetEpc)
+        private static void WriteUserMemory(string targetEpc, string userData)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace ConsoleEncoder
                 {
                     MemoryBank = MemoryBank.User
                 };
-                string hex = new('0', 512);
+                string hex = new('0', userData.Length);
                 tagWriteOp.Data = TagData.FromHexString(hex);
                 tagWriteOp.WordPointer = 0;
                 sequence.Ops.Add(tagWriteOp);
@@ -243,7 +243,7 @@ namespace ConsoleEncoder
 
             try
             {
-                Program.WriteUserMemory(targetEpc);
+                Program.WriteUserMemory(targetEpc, str3);
             }
             catch (Exception ex)
             {
