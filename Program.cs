@@ -11,9 +11,11 @@ namespace ConsoleEncoder
         private static readonly ConcurrentQueue<TagEvent> _messageQueueTagSmartReaderTagEventSocketServer = new();
         private static readonly ImpinjReader reader = new();
         private static ushort NUM_WORDS_USER_MEMORY = 32;
+        private static ushort WORD_POINTER_START_READ_USER_MEMORY = 0;
         private static int opIdUser;
         private static int opIdTid;
         private static string? hostname;
+        private static double txPower = 30.0;
 
         private static async Task Main(string[] args)
         {
@@ -32,7 +34,7 @@ namespace ConsoleEncoder
                 {
                     try
                     {
-                        Program.NUM_WORDS_USER_MEMORY = ushort.Parse(args[0]);
+                        Program.NUM_WORDS_USER_MEMORY = ushort.Parse(args[1]);
                     }
                     catch (Exception ex)
                     {
@@ -137,8 +139,8 @@ namespace ConsoleEncoder
                 settings.Antennas.EnableAll();
                 settings.Antennas.RxSensitivityMax = true;
                 settings.Antennas.TxPowerMax = false;
-                settings.Antennas.TxPowerInDbm = 30.0;
-                Program.OptimizedRead(settings, 3, NUM_WORDS_USER_MEMORY);
+                settings.Antennas.TxPowerInDbm = txPower;
+                Program.OptimizedRead(settings, WORD_POINTER_START_READ_USER_MEMORY, NUM_WORDS_USER_MEMORY);
                 Program.reader.ApplySettings(settings);
                 Program.reader.Start();
             }
@@ -204,10 +206,12 @@ namespace ConsoleEncoder
                         if (tagReadOpResult.OpId == Program.opIdUser)
                         {
                             str3 = tagReadOpResult.Data.ToHexString();
+                            Console.WriteLine("Data : {0}", tagReadOpResult.Data.ToHexString());
                         }
                         else if (tagReadOpResult.OpId == Program.opIdTid)
                         {
                             str2 = tagReadOpResult.Data.ToHexString();
+                            Console.WriteLine("TID : {0}", tagReadOpResult.Data.ToHexString());
                         }
                     }
                     else if (tagOpResult is TagWriteOpResult and TagWriteOpResult tagWriteOpResult)
