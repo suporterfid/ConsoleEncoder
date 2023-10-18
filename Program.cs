@@ -8,7 +8,7 @@ namespace ConsoleEncoder
 {
     internal static class Program
     {
-        private static readonly ConcurrentQueue<TagEvent> _messageQueueTagSmartReaderTagEventSocketServer = new();
+        private static readonly ConcurrentQueue<TagEvent> _messageQueueTagEventsSocketServer = new();
         private static readonly ImpinjReader reader = new();
         private static ushort NUM_WORDS_USER_MEMORY = 32;
         private static ushort WORD_POINTER_START_READ_USER_MEMORY = 0;
@@ -105,7 +105,7 @@ namespace ConsoleEncoder
                             }
                             while (!receivedData.StartsWith("STOP"));
                             Program.Stop();
-                            Program._messageQueueTagSmartReaderTagEventSocketServer.Clear();
+                            Program._messageQueueTagEventsSocketServer.Clear();
                             cancellationTokenSource.Cancel();
                         }
                         
@@ -260,7 +260,7 @@ namespace ConsoleEncoder
             };
             try
             {
-                Program._messageQueueTagSmartReaderTagEventSocketServer.Enqueue(tagEvent);
+                Program._messageQueueTagEventsSocketServer.Enqueue(tagEvent);
             }
             catch (Exception ex)
             {
@@ -290,10 +290,10 @@ namespace ConsoleEncoder
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (!Program._messageQueueTagSmartReaderTagEventSocketServer.IsEmpty)
+                    if (!Program._messageQueueTagEventsSocketServer.IsEmpty)
                     {
                         TagEvent? tagEvent = null;
-                        while (Program._messageQueueTagSmartReaderTagEventSocketServer.TryDequeue(out tagEvent))
+                        while (Program._messageQueueTagEventsSocketServer.TryDequeue(out tagEvent))
                         {
                             if (tagEvent != null)
                             {
