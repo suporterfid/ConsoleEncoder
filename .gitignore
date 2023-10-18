@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/cap_deploy/consoleencoder_cap.upgx
+/etk_tools/8.1.0_Octane_Embedded_Development_Tools.tar.gz
