@@ -164,6 +164,8 @@ namespace ConsoleEncoder
                 Program.reader.Connect(hostname);
                 Program.reader.TagOpComplete += OnTagOpComplete;
                 Settings settings = Program.reader.QueryDefaultSettings();
+                settings.Session = 0;
+                settings.SearchMode = SearchMode.DualTarget;
                 settings.Antennas.EnableAll();
                 settings.Antennas.RxSensitivityMax = true;
                 settings.Antennas.TxPowerMax = false;
