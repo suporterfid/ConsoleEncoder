@@ -6,7 +6,7 @@
 
 # Version is a 4 part number in decimal with each part limited to
 # 0-255. It is the version of the upgrade file to be generated.
-Version = 4.0.0.36
+Version = 1.0.0.2
 
 # Valid Reader Hardware is a string designating the reader models onto which
 # you can load the upgrade.  The following strings are acceptable values for

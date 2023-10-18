@@ -2,7 +2,7 @@
   "profiles": {
     "ConsoleEncoder": {
       "commandName": "Project",
-      "commandLineArgs": "192.168.68.248 32"
+      "commandLineArgs": "192.168.68.248"
     }
   }
 }

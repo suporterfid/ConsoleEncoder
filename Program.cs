@@ -11,11 +11,12 @@ namespace ConsoleEncoder
         private static readonly ConcurrentQueue<TagEvent> _messageQueueTagEventsSocketServer = new();
         private static readonly ImpinjReader reader = new();
         private static ushort NUM_WORDS_USER_MEMORY = 32;
+        private static double txPower = 30.0;
         private static ushort WORD_POINTER_START_READ_USER_MEMORY = 0;
         private static int opIdUser;
         private static int opIdTid;
         private static string? hostname;
-        private static double txPower = 30.0;
+        
 
         private static async Task Main(string[] args)
         {
